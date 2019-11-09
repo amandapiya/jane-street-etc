@@ -17,7 +17,7 @@ class Configuration {
        1 = slow
        2 = empty
     */
-    final Integer test_exchange_kind = 2;
+    final Integer test_exchange_kind = 0;
     /* replace REPLACEME with your team name */
     final String  team_name          = "warnerbrothers";
 
@@ -71,7 +71,7 @@ public class Bot
                     if(!lineArray[3].equals("SELL") && Integer.parseInt(lineArray[3].split(":",-1)[0]) > 1000)
                     {
                         to_exchange.println("ADD " + orderNum++ + " BOND SELL " + Integer.parseInt(lineArray[3].split(":",-1)[0]) + " " +Integer.parseInt(lineArray[3].split(":",-1)[1])  );
-                        System.out.print("Sold " +Integer.parseInt(lineArray[3].split(":",-1)[0]) + " " +Integer.parseInt(lineArray[3].split(":",-1)[1]) );
+                        System.out.println("Sold " +Integer.parseInt(lineArray[3].split(":",-1)[0]) + " " +Integer.parseInt(lineArray[3].split(":",-1)[1]) );
                     }
                     for (int i=0; i<lineArray.length; i++){
                         if (lineArray[i].equals("SELL") && i<lineArray.length-1){
@@ -88,13 +88,13 @@ public class Bot
                 {
                     if(!lineArray[3].equals("SELL"))
                     {
-                        ValePrice[0] = lineArray[3].split(":")[0];
-                        ValePrice[1] = lineArray[3].split(":")[1];
+                        ValePrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        ValePrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
                     }
                     for (int i=0; i<lineArray.length; i++){
                         if (lineArray[i].equals("SELL") && i<lineArray.length-1){
-                            ValePrice[2] = lineArray[i+1].split(":")[0];
-                            ValePrice[3] = lineArray[i+1].split(":")[1];
+                            ValePrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            ValePrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
                         }
                     }
                
@@ -115,13 +115,13 @@ public class Bot
                 {
                     if(!lineArray[3].equals("SELL"))
                     {
-                        ValbzPrice[0] = lineArray[3].split(":")[0];
-                        ValbzPrice[1] = lineArray[3].split(":")[1];
+                        ValbzPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        ValbzPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
                     }
                     for (int i=0; i<lineArray.length; i++){
                         if (lineArray[i].equals("SELL") && i<lineArray.length-1){
-                            ValbzPrice[2] = lineArray[i+1].split(":")[0];
-                            ValbzPrice[3] = lineArray[i+1].split(":")[1];
+                            ValbzPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            ValbzPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
                         }
                     }
 
