@@ -67,7 +67,17 @@ public class Bot
                 {
                     if(!lineArray[3].equals("SELL") && Integer.parseInt(lineArray[3].split(":",-1)[0]) > 1000)
                     {
-                        to_exchange.println("ADD" + orderNum++ + "BOND SELL" + Integer.parseInt(lineArray[3].split(":",-1)[0]) +Integer.parseInt(lineArray[3].split(":",-1)[1])  );
+                        to_exchange.println("ADD " + orderNum++ + " BOND SELL " + Integer.parseInt(lineArray[3].split(":",-1)[0]) + " " +Integer.parseInt(lineArray[3].split(":",-1)[1])  );
+                        System.out.print("Sold " +Integer.parseInt(lineArray[3].split(":",-1)[0]) + " " +Integer.parseInt(lineArray[3].split(":",-1)[1]) );
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            if(Integer.parseInt(lineArray[i+1].split(":",-1)[0]) < 1000)
+                            {
+                                to_exchange.println("ADD " + orderNum++ + " BOND BUY " + Integer.parseInt(lineArray[i+1].split(":",-1)[0]) + " "+Integer.parseInt(lineArray[i+1].split(":",-1)[1])  );
+                                System.out.println("Bought " +Integer.parseInt(lineArray[i+1].split(":",-1)[0]) + " "+Integer.parseInt(lineArray[i+1].split(":",-1)[1])  );
+                            } 
+                        }
                     }
                 }
             }
