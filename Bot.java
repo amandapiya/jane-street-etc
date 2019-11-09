@@ -58,6 +58,9 @@ public class Bot
             String reply = from_exchange.readLine().trim();
             System.err.printf("The exchange replied: %s\n", reply);
 
+            int ValePrice[] = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE}; //
+            int ValbzPrice[] = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};//first 2 buy last 2 sell
+
             int orderNum = 1;
             
             for(String line = from_exchange.readLine(); line != null; line = from_exchange.readLine())
@@ -78,6 +81,61 @@ public class Bot
                                 System.out.println("Bought " +Integer.parseInt(lineArray[i+1].split(":",-1)[0]) + " "+Integer.parseInt(lineArray[i+1].split(":",-1)[1])  );
                             } 
                         }
+                    }
+                }
+
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("VALE"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        ValePrice[0] = lineArray[3].split(":")[0];
+                        ValePrice[1] = lineArray[3].split(":")[1];
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            ValePrice[2] = lineArray[i+1].split(":")[0];
+                            ValePrice[3] = lineArray[i+1].split(":")[1];
+                        }
+                    }
+               
+                    if (Math.min(ValePrice[1], ValbzPrice[3])*(ValePrice[0]-ValbzPrice[2]) >10){
+                        to_exchange.println("ADD " + orderNum++ + " VALBZ BUY " + ValbzPrice[2] + " " +Math.min(ValePrice[1], ValbzPrice[3])); 
+                        to_exchange.println("CONVERT " + orderNum++ + " VALE BUY " + Math.min(ValePrice[1], ValbzPrice[3])); 
+                        to_exchange.println("ADD " + orderNum++ + " VALE SELL " +  ValePrice[0] + " " +Math.min(ValePrice[1], ValbzPrice[3]));
+                        System.out.println("Made " + (Math.min(ValePrice[1], ValbzPrice[3])*(ValePrice[0]-ValbzPrice[2]) -10) + " dollars");
+                    } 
+                    if (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) >10){
+                        to_exchange.println("ADD " + orderNum++ + " VALE BUY " + ValePrice[2] + " " +Math.min(ValePrice[3], ValbzPrice[1])); 
+                        to_exchange.println("CONVERT " + orderNum++ + " VALE SELL " + Math.min(ValePrice[3], ValbzPrice[1])); 
+                        to_exchange.println("ADD " + orderNum++ + " VALBZ SELL " +  ValbzPrice[0] + " " +Math.min(ValePrice[3], ValbzPrice[1]));
+                        System.out.println("Made " + (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) -10) + " dollars"); 
+                    }
+                }
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("VALBZ"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        ValbzPrice[0] = lineArray[3].split(":")[0];
+                        ValbzPrice[1] = lineArray[3].split(":")[1];
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            ValbzPrice[2] = lineArray[i+1].split(":")[0];
+                            ValbzPrice[3] = lineArray[i+1].split(":")[1];
+                        }
+                    }
+
+                    if (Math.min(ValePrice[1], ValbzPrice[3])*(ValePrice[0]-ValbzPrice[2]) >10){
+                        to_exchange.println("ADD " + orderNum++ + " VALBZ BUY " + ValbzPrice[2] + " " +Math.min(ValePrice[1], ValbzPrice[3])); 
+                        to_exchange.println("CONVERT " + orderNum++ + " VALE BUY " + Math.min(ValePrice[1], ValbzPrice[3])); 
+                        to_exchange.println("ADD " + orderNum++ + " VALE SELL " +  ValePrice[0] + " " +Math.min(ValePrice[1], ValbzPrice[3]));
+                        System.out.println("Made " + (Math.min(ValePrice[1], ValbzPrice[3])*(ValePrice[0]-ValbzPrice[2]) -10) + " dollars");
+                    } 
+                    if (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) >10){
+                        to_exchange.println("ADD " + orderNum++ + " VALE BUY " + ValePrice[2] + " " +Math.min(ValePrice[3], ValbzPrice[1])); 
+                        to_exchange.println("CONVERT " + orderNum++ + " VALE SELL " + Math.min(ValePrice[3], ValbzPrice[1])); 
+                        to_exchange.println("ADD " + orderNum++ + " VALBZ SELL " +  ValbzPrice[0] + " " +Math.min(ValePrice[3], ValbzPrice[1]));
+                        System.out.println("Made " + (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) -10) + " dollars"); 
                     }
                 }
             }
