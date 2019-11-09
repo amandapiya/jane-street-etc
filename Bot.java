@@ -45,6 +45,7 @@ public class Bot
         try
         {
             Socket skt = new Socket(config.exchange_name(), config.port());
+            skt.setSoTimeout(10*1000);
             BufferedReader from_exchange = new BufferedReader(new InputStreamReader(skt.getInputStream()));
             PrintWriter to_exchange = new PrintWriter(skt.getOutputStream(), true);
 
@@ -138,6 +139,8 @@ public class Bot
                         System.out.println("Made " + (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) -10) + " dollars"); 
                     }
                 }
+
+
             }
 
         }
