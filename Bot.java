@@ -89,7 +89,7 @@ public class Bot
         }
     }
 }
-
+/*
 class Ticker
 {
     ArrayList<Double> buyPrices = new ArrayList<Double>();
@@ -113,3 +113,4 @@ class Ticker
         sellAmounts.add(amount);
     }
 }
+*/
