@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 class Configuration {
     String exchange_name;
@@ -56,10 +57,49 @@ public class Bot
             to_exchange.println(("HELLO " + config.team_name).toUpperCase());
             String reply = from_exchange.readLine().trim();
             System.err.printf("The exchange replied: %s\n", reply);
+
+            int orderNum = 1;
+            
+            for(String line = from_exchange.readLine(); line != null; line = from_exchange.readLine())
+            {
+                String[] lineArray = line.split(" ",-1);
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("BOND"))
+                {
+                    if(!lineArray[3].equals("SELL") && Integer.parseInt(lineArray[3].split(":",-1)[0]) > 1000)
+                    {
+                        to_exchange.println("ADD" + orderNum++ + "BOND SELL" + Integer.parseInt(lineArray[3].split(":",-1)[0]) +Integer.parseInt(lineArray[3].split(":",-1)[1])  );
+                    }
+                }
+            }
+
         }
         catch (Exception e)
         {
             e.printStackTrace(System.out);
         }
+    }
+}
+
+class Ticker
+{
+    ArrayList<Double> buyPrices = new ArrayList<Double>();
+    ArrayList<Integer> buyAmounts = new ArrayList<Integer>();
+    ArrayList<Double> sellPrices = new ArrayList<Double>();
+    ArrayList<Integer> sellAmounts = new ArrayList<Integer>();
+
+    public Ticker(String tickerSymbol)
+    {
+
+    }
+
+    public addBuy(double price, int amount)
+    {
+        buyPrices.add(price);
+        buyAmounts.add(amount);
+    }
+    public addSell(double price, int amount)
+    {
+        sellPrices.add(price);
+        sellAmounts.add(amount);
     }
 }
