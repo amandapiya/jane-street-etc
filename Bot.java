@@ -17,7 +17,7 @@ class Configuration {
        2 = empty
     */
     final Integer test_exchange_kind = 2;
-    /* replace REPLACEME with your team name! */
+    /* replace REPLACEME with your team name */
     final String  team_name          = "warnerbrothers";
 
     Configuration(Boolean test_mode) {
