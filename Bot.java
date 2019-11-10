@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.net.Socket;
+import java.time.chrono.MinguoChronology;
 import java.util.ArrayList;
 
 class Configuration {
@@ -61,6 +62,12 @@ public class Bot
 
             int ValePrice[] = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE}; //
             int ValbzPrice[] = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};//first 2 buy last 2 sell
+            int BondPrice[] = {0, 0, 0,0}; //
+            int GsPrice[] = {0, 0, 0, 0};//first 2 buy last 2 sel
+            int MsPrice[] = {0, 0, 0, 0};
+            int WfcPrice[] = {0, 0, 0, 0}; //first 2 buy last 2 sel
+            int XlfPrice[] = {0,0,0,0};
+
 
             int orderNum = 1;
             
@@ -139,7 +146,106 @@ public class Bot
                         System.out.println("Made " + (Math.min(ValePrice[3], ValbzPrice[1])*(ValbzPrice[0]-ValePrice[2]) -10) + " dollars"); 
                     }
                 }
+                
+                boolean history = false;
 
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("XLF"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        XlfPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        XlfPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            XlfPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            XlfPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
+                        }
+                    } 
+                    //test if history exists for other stocks
+                    if(!history)
+                    {
+                        if(BondPrice[0] != 0 && GsPrice[0] != 0 && MsPrice[0] != 0 && WfcPrice[0] != 0)
+                            history = true;
+                    }
+
+                    if(history)
+                    {
+                        if(100 + (XlfPrice[0] * 10) < BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2)
+                        {
+                            int leftMaxTrades = XlfPrice[1] / 10;
+                            int rightMaxTrades = Math.min( Math.min(BondPrice[3] / 3, GsPrice[3] / 2), Math.min(MsPrice[3]/3, WfcPrice[3]/2));
+                            int trades = Math.min(leftMaxTrades,rightMaxTrades);
+
+                            to_exchange.println("ADD " + orderNum++ + " XLF BUY " + XlfPrice[0] + " " + trades * 10); 
+                            to_exchange.println("CONVERT " + orderNum++ + " XLF SELL " + trades * 10); 
+                            to_exchange.println("ADD " + orderNum++ + " BOND SELL " +  BondPrice[2] + " " +3 * trades);
+                            to_exchange.println("ADD " + orderNum++ + " GS SELL " +  GsPrice[2] + " " +2 * trades);
+                            to_exchange.println("ADD " + orderNum++ + " MS SELL " +  MsPrice[2] + " " + 3 * trades);
+                            to_exchange.println("ADD " + orderNum++ + " WFC SELL " +  WfcPrice[2] + " " + 2 * trades);
+                            System.out.println("Made " +(100 + (XlfPrice[0] * 10) - BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2) + " dollars");
+
+                        }
+                    }
+                }
+
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("BOND"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        BondPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        BondPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            BondPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            BondPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
+                        }
+                    } 
+                
+                }
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("GS"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        GsPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        GsPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            GsPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            GsPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
+                        }
+                    } 
+                }
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("MS"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        MsPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        MsPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            MsPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            MsPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
+                        }
+                    } 
+                }
+                if(lineArray[0].equals("BOOK") && lineArray[1].equals("WFC"))
+                {
+                    if(!lineArray[3].equals("SELL"))
+                    {
+                        WfcPrice[0] = Integer.parseInt(lineArray[3].split(":")[0]);
+                        WfcPrice[1] = Integer.parseInt(lineArray[3].split(":")[1]);
+                    }
+                    for (int i=0; i<lineArray.length; i++){
+                        if (lineArray[i].equals("SELL") && i<lineArray.length-1){
+                            WfcPrice[2] = Integer.parseInt(lineArray[i+1].split(":")[0]);
+                            WfcPrice[3] = Integer.parseInt(lineArray[i+1].split(":")[1]);
+                        }
+                    } 
+                } 
 
             }
 
