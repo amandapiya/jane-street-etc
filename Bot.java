@@ -67,6 +67,7 @@ public class Bot
             int MsPrice[] = {0, 0, 0, 0};
             int WfcPrice[] = {0, 0, 0, 0}; //first 2 buy last 2 sel
             int XlfPrice[] = {0,0,0,0};
+            int XlfAmount = 0;
 
 
             int orderNum = 1;
@@ -171,21 +172,29 @@ public class Bot
 
                     if(history)
                     {
-                        if(100 + (XlfPrice[0] * 10) < BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2)
+                        if((XlfPrice[0] * 10) < BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2)
                         {
-                            int leftMaxTrades = XlfPrice[1] / 10;
-                            int rightMaxTrades = Math.min( Math.min(BondPrice[3] / 3, GsPrice[3] / 2), Math.min(MsPrice[3]/3, WfcPrice[3]/2));
-                            int trades = Math.min(leftMaxTrades,rightMaxTrades);
-
-                            to_exchange.println("ADD " + orderNum++ + " XLF BUY " + XlfPrice[0] + " " + trades * 10); 
-                            to_exchange.println("CONVERT " + orderNum++ + " XLF SELL " + trades * 10); 
-                            to_exchange.println("ADD " + orderNum++ + " BOND SELL " +  BondPrice[2] + " " +3 * trades);
-                            to_exchange.println("ADD " + orderNum++ + " GS SELL " +  GsPrice[2] + " " +2 * trades);
-                            to_exchange.println("ADD " + orderNum++ + " MS SELL " +  MsPrice[2] + " " + 3 * trades);
-                            to_exchange.println("ADD " + orderNum++ + " WFC SELL " +  WfcPrice[2] + " " + 2 * trades);
-                            System.out.println("Made " +(100 + (XlfPrice[0] * 10) - BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2) + " dollars");
+                            to_exchange.println("ADD " + orderNum++ + " XLF BUY " + XlfPrice[0] + " " + XlfPrice[1]);
+                            XlfAmount += XlfPrice[1];
+                            /*
+                            if(trades > 0)
+                            {
+                                to_exchange.println("ADD " + orderNum++ + " XLF BUY " + XlfPrice[0] + " " + trades * 10); 
+                                to_exchange.println("CONVERT " + orderNum++ + " XLF SELL " + trades * 10); 
+                                to_exchange.println("ADD " + orderNum++ + " BOND SELL " +  BondPrice[2] + " " +3 * trades);
+                                to_exchange.println("ADD " + orderNum++ + " GS SELL " +  GsPrice[2] + " " +2 * trades);
+                                to_exchange.println("ADD " + orderNum++ + " MS SELL " +  MsPrice[2] + " " + 3 * trades);
+                                to_exchange.println("ADD " + orderNum++ + " WFC SELL " +  WfcPrice[2] + " " + 2 * trades);
+                                System.out.println("Made " +(100 + (XlfPrice[0] * 10) - (BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2) )+ " dollars");
+                            }
+                            */
 
                         }
+                        if((XlfPrice[2] * 10) > BondPrice[2] * 3 + GsPrice[2] * 2 + MsPrice[2] * 3 + WfcPrice[2] * 2 && XlfAmount > 0)
+                        {
+                            to_exchange.println("ADD " + orderNum++ + " XLF SELL " + XlfPrice[0] + " " + XlfPrice[3]);
+                            XlfAmount -= XlfPrice[3];
+                        } 
                     }
                 }
 
